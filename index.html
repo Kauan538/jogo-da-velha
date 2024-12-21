@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .tabuleiro {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+        }
+
+        .celula {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background-color: white;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .celula:hover {
+            background-color: #e0e0e0;
+        }
+
+        .mensagem {
+            margin-top: 20px;
+            font-size: 1.5rem;
+        }
+
+        .reset {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .reset:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="tabuleiro" id="tabuleiro">
+            <div class="celula" onclick="jogar(0)"></div>
+            <div class="celula" onclick="jogar(1)"></div>
+            <div class="celula" onclick="jogar(2)"></div>
+            <div class="celula" onclick="jogar(3)"></div>
+            <div class="celula" onclick="jogar(4)"></div>
+            <div class="celula" onclick="jogar(5)"></div>
+            <div class="celula" onclick="jogar(6)"></div>
+            <div class="celula" onclick="jogar(7)"></div>
+            <div class="celula" onclick="jogar(8)"></div>
+        </div>
+        <div class="mensagem" id="mensagem">Jogador 1 (X) - é sua vez!</div>
+        <button class="reset" onclick="reiniciar()">Reiniciar Jogo</button>
+    </div>
+
+    <script>
+        let tabuleiro = ['', '', '', '', '', '', '', '', ''];
+        let vezJogador = 'X';
+        let jogoAtivo = true;
+        const mensagem = document.getElementById('mensagem');
+        const celulas = document.getElementsByClassName('celula');
+
+        const vitorias = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        function jogar(index) {
+            if (tabuleiro[index] === '' && jogoAtivo) {
+                tabuleiro[index] = vezJogador;
+                celulas[index].innerText = vezJogador;
+                verificarVitoria();
+                vezJogador = vezJogador === 'X' ? 'O' : 'X';
+                mensagem.innerText = `Jogador ${vezJogador === 'X' ? '1 (X)' : '2 (O)'} - é sua vez!`;
+            }
+        }
+
+        function verificarVitoria() {
+            for (let i = 0; i < vitorias.length; i++) {
+                const [a, b, c] = vitorias[i];
+                if (tabuleiro[a] !== '' && tabuleiro[a] === tabuleiro[b] && tabuleiro[a] === tabuleiro[c]) {
+                    jogoAtivo = false;
+                    mensagem.innerText = `Jogador ${tabuleiro[a] === 'X' ? '1 (X)' : '2 (O)'} venceu!`;
+                    return;
+                }
+            }
+
+            if (!tabuleiro.includes('')) {
+                jogoAtivo = false;
+                mensagem.innerText = 'Empate!';
+            }
+        }
+
+        function reiniciar() {
+            tabuleiro = ['', '', '', '', '', '', '', '', ''];
+            vezJogador = 'X';
+            jogoAtivo = true;
+            mensagem.innerText = 'Jogador 1 (X) - é sua vez!';
+            for (let i = 0; i < celulas.length; i++) {
+                celulas[i].innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>
